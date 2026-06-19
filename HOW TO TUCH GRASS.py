@@ -2,8 +2,11 @@ import random  # Randomizer
 import pickle  # For saving and loading progress
 import os      # For file handling
 import urllib.request  # For downloading content updates
-from colorama import Fore, Style  # For styling text
-
+try:
+    from colorama import Fore, Style  # For styling text
+except Exception as e:
+    print("Colorama is not installed. Please install it by typing 'pip install colorama' in the terminal and try again. \nIf that doesn't work, please make sure you have the latest python version installed and it is set as your default Python interpreter.\nIf you are on a mobile device, use the appropriate pip installer for your editor, for example, for Pydroid 3, go into the menu and press the option 'Pip', Then install Colorama from the menu that pops up.\n\nWithout Colorama, all Themes features will not function and cause errors. ")
+    exit()
 
 
 # ====== REMOTE URLs ======
