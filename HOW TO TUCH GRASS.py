@@ -4,12 +4,12 @@ import os      # For file handling
 import sys
 import time    # For delays
 import urllib.request  # For downloading content updates
-from colorama import Fore, Back, init  # For styling text
+from colorama import Fore, init  # For styling text
 
 init(autoreset = True)  # Automatically reset colorama styles after each print
 os.chdir(os.path.dirname(sys.executable))  # Change working directory to the location of the executable (for bundled versions)
 
-local_game_version = "1.3"  # Current version of the game
+local_game_version = "1.3 Beta"  # Current version of the game
 
 ITALIC_VAR = "\033[3m"
 RESET_VAR = "\033[0m"
@@ -61,8 +61,6 @@ def load_content():
         time.sleep(1.2)
         sys.exit(0)
 
-# List of save names (without .dat)
-SAVES = [f[:-4] for f in os.listdir("saves") if f.endswith(".dat")]
 
 def load_slot(slot_name):
     #Load progress from a save file.
@@ -107,16 +105,16 @@ def clearTerminal():
 	os.system('cls' if os.name == 'nt' else 'clear')
 
 def iinput(text):
-    return input(Fore.LIGHTRED_EX + Back.BLACK + ITALIC_VAR + text + RESET_VAR)
+    return input(Fore.LIGHTRED_EX + ITALIC_VAR + text + RESET_VAR)
 
 def tprint(text):
-    print(sel_theme + sel_bg + text)
+    print(sel_theme + text)
 
 def itprint(text):
-    print(Fore.LIGHTRED_EX + Back.BLACK + ITALIC_VAR + text + RESET_VAR)
+    print(Fore.LIGHTRED_EX + ITALIC_VAR + text + RESET_VAR)
 
 def oprint(text):
-    print(ITALIC_VAR + Fore.LIGHTBLUE_EX + Back.BLUE + text + RESET_VAR)
+    print(ITALIC_VAR + Fore.LIGHTBLUE_EX + text + RESET_VAR)
 
 # ====== CREATE SAVES FOLDER IF NONEXISTENT ======
 if not os.path.exists("saves"):
@@ -180,9 +178,12 @@ clearTerminal()
 GAMES = content["games"]
 EASTER_EGGS = content["eggs"]
 THEMES = content["themes"]
-BACKGROUNDS = content["backgrounds"]
 
 # ====== SAVE SLOT SELECTION ======
+
+# List of save names (without .dat)
+SAVES = [f[:-4] for f in os.listdir("saves") if f.endswith(".dat")]
+
 while True:
     print (Fore.WHITE + f'\nSelect a save slot from the following:\n')
     for n in SAVES:
@@ -217,8 +218,7 @@ REQUIRED_KEYS = {
     "games_found": [],
     "eggs_found": [],
     "coins": 0,
-    "unlocked_themes": ["Default"],
-    "unlocked_backgrounds": ["Default"]
+    "unlocked_themes": ["Default"]
 }
 
 # ====== KEY AUTO-FIX =====
@@ -242,16 +242,6 @@ for value in THEMES.keys():
 for value in progress['unlocked_themes']:
     themeS.remove(value)
 
-BACKGROUNDs = list()
-for value in progress['unlocked_backgrounds']:
-    BACKGROUNDs.append(value)
-
-backgroundS = list()
-for value in BACKGROUNDS:
-    backgroundS.append(value)
-for value in progress['unlocked_backgrounds']:
-    backgroundS.remove(value)
-
 length = 0
 GAME = list(GAMES.keys())
 EGG = list(EASTER_EGGS.keys())
@@ -272,26 +262,6 @@ elif THEME != "Default" and THEME in progress["unlocked_themes"]:
 else:
     print('Theme not recognized. Setting theme to default.')
     sel_theme = ""
-
-time.sleep(1)
-clearTerminal()
-
-# ====== BACKGROUND SELECTION ======
-clearTerminal()
-print("\n\nEnter the text background you would like to use for this game from the following:\n")
-for t in BACKGROUNDS:
-    oprint(f"-{t} ")
-BACKGROUND=iinput("\nEnter your selected Background here: ").title()
-
-if BACKGROUND == "Default":
-    print("Background set to Default.")
-    sel_bg = ""
-elif BACKGROUND in BACKGROUNDS:
-    sel_bg = BACKGROUND
-    print(f"Background set to {BACKGROUND}.")
-else:
-    print('Background not recognized. Setting background to default.')
-    sel_bg = ""
 
 time.sleep(1)
 clearTerminal()
@@ -346,26 +316,6 @@ while True:
                 tprint(f"Theme set to {THEME}.")
             else:
                 print('Theme not recognized. Setting theme to default.')
-
-
-# === CHANGE BACKGROUND ===
-    elif game == 'backgrounds':
-        clearTerminal()
-        print("\n\nEnter the background you would like to use for this game from the following:\n")
-        for t in BACKGROUNDs:
-            print(Fore.LIGHTRED_EX + "- " + t)
-        print('\n')
-        BACKGROUND=iinput(Fore.LIGHTRED_EX + ITALIC_VAR + "Enter your selected Background here: " + Fore.RESET + RESET_VAR).title()
-
-        if BACKGROUND in BACKGROUNDS:
-            if BACKGROUND == "Default":
-                print("Background set to Default.")
-                sel_bg = ""
-            else:
-                sel_bg = BACKGROUND
-                tprint(f"Background set to {BACKGROUND}.")
-        else:
-            print('Background not recognized. Setting background to default.')
 
 
     # === GAME LIST ===
@@ -503,25 +453,6 @@ while True:
                 tprint("\nNot enough coins!")
 
         elif choice == "3":
-            if progress["coins"] >= 10: 
-                clearTerminal()
-                tprint("\nAvailable backgrounds:")
-                for t in backgroundS:
-                    tprint("- " + t)
-                background_choice = iinput("\nEnter the background you want to unlock: ").title()
-                if background_choice in BACKGROUNDS and background_choice not in progress["unlocked_backgrounds"]:
-                    progress["coins"] -= 10
-                    progress["unlocked_backgrounds"].append(background_choice)
-                    BACKGROUNDs.append(background_choice)
-                    backgroundS.remove(background_choice)
-                    tprint(f"\nBackground '{background_choice}' unlocked!")
-                else:
-                    tprint("\nInvalid background choice or already unlocked.")
-                    progress["coins"] += 10  # Refund coins if invalid choice
-            else:
-                tprint("\nNot enough coins!")
-
-        elif choice == "4":
             clearTerminal()
             tprint("\nLeaving the shop...")
 
