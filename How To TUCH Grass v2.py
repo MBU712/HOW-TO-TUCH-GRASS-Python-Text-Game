@@ -16,6 +16,8 @@ if os.name == 'nt':  # Check if the operating system is Windows
     save_dir = os.path.join(local_app_data, "How_To_TUCH_Grass", "saves")
 elif os.name == 'posix':  # Check if the operating system is macOS or Linux
     save_dir = os.path.expanduser("~/Library/Application Support/MyGame/saves")
+else:
+    save_dir = "saves"
 
 ITALIC_VAR = "\033[3m"
 RESET_VAR = "\033[0m"
